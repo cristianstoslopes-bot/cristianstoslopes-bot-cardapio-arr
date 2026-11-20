@@ -1,26 +1,76 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+/*
+ * Paleta da marca (landing + admin):
+ *   Verde floresta #243B32 · Creme #F4EBDD · Caramelo #D88B48 · Carvão #1C1C1A
+ * O cardápio público sobrescreve --primary/--accent/... com o tema do restaurante
+ * (ver components/public/restaurant-theme.tsx).
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffdf9;
+  --foreground: #1c1c1a;
+  --card: #ffffff;
+  --card-foreground: #1c1c1a;
+  --primary: #243b32;
+  --primary-foreground: #f4ebdd;
+  --secondary: #f4ebdd;
+  --secondary-foreground: #243b32;
+  --accent: #d88b48;
+  --accent-foreground: #1c1c1a;
+  --muted: #f3eee6;
+  --muted-foreground: #5f5a52; /* contraste AA sobre --background */
+  --destructive: #b42318;
+  --border: #e6dfd3;
+  --input: #d9d0c2;
+  --ring: #d88b48;
+  --radius: 0.75rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand-forest: #243b32;
+  --color-brand-cream: #f4ebdd;
+  --color-brand-caramel: #d88b48;
+  --color-brand-charcoal: #1c1c1a;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+  :focus-visible {
+    outline-color: var(--ring);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* model-viewer ocupa o container */
+model-viewer {
+  width: 100%;
+  height: 100%;
+  --poster-color: transparent;
 }
