@@ -9,6 +9,15 @@ const AUTH_PAGES = ["/login", "/signup"];
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // Supabase ainda não configurado (ex.: primeiro deploy): não derruba o site inteiro.
+  // Páginas públicas abrem normalmente; rotas privadas vão para o login.
+  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+    if (PROTECTED_PREFIXES.some((p) => request.nextUrl.pathname.startsWith(p))) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    return response;
+  }
+
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     cookies: {
       getAll: () => request.cookies.getAll(),
