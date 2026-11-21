@@ -143,7 +143,7 @@ export function PublicMenu({
         </p>
       )}
 
-      <main className="mx-auto grid max-w-3xl gap-8 px-4 py-6">
+      <main className="mx-auto grid max-w-3xl grid-cols-1 gap-8 px-4 py-6">
         {sections.featured.length > 0 && (
           <section aria-labelledby="featured-title">
             <h2 id="featured-title" className="mb-3 font-display text-xl font-bold">Destaques</h2>
