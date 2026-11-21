@@ -5,7 +5,7 @@ export const BUCKETS = { assets: "restaurant-assets", models: "models-3d" } as c
 /** URL pública (CDN do Supabase Storage). Buckets são públicos só para leitura. */
 export function publicUrl(bucket: string, path: string | null | undefined) {
   if (!path) return null;
-  if (path.startsWith("http")) return path;
+  if (path.startsWith("http") || path.startsWith("/")) return path; // URL absoluta ou arquivo do próprio site (/demo/...)
   return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path.split("/").map(encodeURIComponent).join("/")}`;
 }
 
