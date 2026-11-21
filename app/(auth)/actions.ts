@@ -40,7 +40,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   if (!parsed.success) return { fieldErrors: fieldErrors(parsed.error) };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -48,7 +48,13 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
       emailRedirectTo: `${SITE_URL}/auth/confirm?next=/onboarding`,
     },
   });
-  if (error) return { error: error.message };
+  if (error) {
+    if (error.code === "user_already_exists") return { error: "Este e-mail já tem conta. Use \"Entrar\"." };
+    if (error.code === "over_email_send_rate_limit") return { error: "Muitos cadastros em pouco tempo. Aguarde alguns minutos e tente de novo." };
+    return { error: error.message };
+  }
+  // Confirmação de e-mail desligada no Supabase → já existe sessão: segue direto para o onboarding.
+  if (data.session) redirect("/onboarding");
   return { message: "Conta criada! Enviamos um link de confirmação para o seu e-mail." };
 }
 
