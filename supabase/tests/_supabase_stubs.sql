@@ -12,6 +12,4 @@ alter table storage.objects enable row level security;
 create publication supabase_realtime;
 grant usage on schema public, auth, storage to anon, authenticated;
 grant execute on function auth.uid() to anon, authenticated;
-alter default privileges in schema public grant all on tables to anon, authenticated;
-alter default privileges in schema public grant all on sequences to anon, authenticated;
 grant all on storage.objects to authenticated;
