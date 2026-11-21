@@ -52,7 +52,10 @@ export async function POST(req: NextRequest) {
     case "checkout.session.completed": {
       const session = event.data.object;
       if (session.metadata?.kind === "order" && session.payment_status === "paid") {
-        await admin.from("orders").update({ payment_status: "paid" }).eq("id", session.metadata.order_id).eq("payment_status", "pending");
+        const { data: order } = await admin.from("orders").select("total_cents").eq("id", session.metadata.order_id).maybeSingle();
+        if (order && session.amount_total === order.total_cents && session.currency === "brl") {
+          await admin.from("orders").update({ payment_status: "paid" }).eq("id", session.metadata.order_id).eq("payment_status", "pending");
+        }
       }
       if (session.mode === "subscription" && session.subscription) {
         const sub = await stripe().subscriptions.retrieve(typeof session.subscription === "string" ? session.subscription : session.subscription.id);

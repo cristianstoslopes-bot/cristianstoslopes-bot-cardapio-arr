@@ -17,7 +17,7 @@ function fieldErrors(err: z.ZodError) {
 /** Evita open-redirect: só aceita caminhos internos. */
 function safeNext(next: FormDataEntryValue | null, fallback = "/dashboard") {
   const v = typeof next === "string" ? next : "";
-  return v.startsWith("/") && !v.startsWith("//") ? v : fallback;
+  return /^\/(?![\/\\])/.test(v) && !v.includes("\\") ? v : fallback;
 }
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
@@ -49,7 +49,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
     },
   });
   if (error) {
-    if (error.code === "user_already_exists") return { error: "Este e-mail já tem conta. Use \"Entrar\"." };
+    if (error.code === "user_already_exists") return { error: "Não foi possível criar a conta. Se você já tem cadastro, use \"Entrar\"." };
     if (error.code === "over_email_send_rate_limit") return { error: "Muitos cadastros em pouco tempo. Aguarde alguns minutos e tente de novo." };
     return { error: error.message };
   }

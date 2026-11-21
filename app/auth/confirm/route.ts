@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");
   const nextParam = searchParams.get("next") ?? "/dashboard";
-  const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/dashboard";
+  const next = /^\/(?![\/\\])/.test(nextParam) && !nextParam.includes("\\") ? nextParam : "/dashboard";
 
   const supabase = await createClient();
   let ok = false;

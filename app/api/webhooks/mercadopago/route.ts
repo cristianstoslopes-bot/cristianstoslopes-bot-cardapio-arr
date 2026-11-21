@@ -16,10 +16,15 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
 
   if (body.type === "payment") {
-    const payment = await mp<{ status: string; external_reference: string }>(`/v1/payments/${dataId}`);
+    const payment = await mp<{ status: string; external_reference: string; transaction_amount: number; currency_id: string }>(`/v1/payments/${dataId}`);
     const status = payment.status === "approved" ? "paid" : payment.status === "rejected" || payment.status === "cancelled" ? "failed" : payment.status === "refunded" ? "refunded" : null;
     if (status && payment.external_reference) {
-      await admin.from("orders").update({ payment_status: status }).eq("id", payment.external_reference);
+      const { data: order } = await admin.from("orders").select("total_cents").eq("id", payment.external_reference).maybeSingle();
+      // Só marca como pago se o valor e a moeda batem com o pedido
+      const amountOk = order && payment.currency_id === "BRL" && Math.round(payment.transaction_amount * 100) === order.total_cents;
+      if (order && (status !== "paid" || amountOk)) {
+        await admin.from("orders").update({ payment_status: status }).eq("id", payment.external_reference);
+      }
     }
   }
 

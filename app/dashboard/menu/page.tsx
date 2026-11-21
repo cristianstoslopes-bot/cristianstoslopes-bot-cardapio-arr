@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { connection } from "next/server";
 import { MenuEditor } from "@/components/menu/menu-editor";
 
 export const metadata: Metadata = { title: "Cardápio" };
 
-export default function MenuPage() {
-  return (
-    <Suspense>
-      <MenuEditor />
-    </Suspense>
-  );
+export default async function Page() {
+  // Painel é sempre por requisição (sessão + relógio); evita pré-render estático.
+  await connection();
+  return <MenuEditor />;
 }
