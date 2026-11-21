@@ -37,11 +37,13 @@ interface ProductViewerProps {
   currency?: string;
   onAddToCart?: () => void;
   showOverlay?: boolean;
+  /** Botão "Adicionar" sobre o 3D (útil na sessão AR). Desligue quando a tela já tem um. */
+  showAddButton?: boolean;
   className?: string;
 }
 
 export function ProductViewer({
-  model, product, restaurantId, tableId, currency = "BRL", onAddToCart, showOverlay = true, className,
+  model, product, restaurantId, tableId, currency = "BRL", onAddToCart, showOverlay = true, showAddButton = true, className,
 }: ProductViewerProps) {
   const support = useARSupport();
   const tracked = useRef(false);
@@ -71,7 +73,7 @@ export function ProductViewer({
           <p className="mt-1 text-[11px] text-muted-foreground">Contém: {product.allergens.join(", ")}</p>
         )}
       </div>
-      {onAddToCart && (
+      {onAddToCart && showAddButton && (
         <Button size="sm" className="pointer-events-auto shadow" onClick={onAddToCart}>
           Adicionar
         </Button>
